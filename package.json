@@ -1,0 +1,27 @@
+{
+  "name": "system-info",
+  "version": "1.0.1",
+  "description": "Write your system info to console.",
+  "main": "index.js",
+  "scripts": {
+    "test": "node index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Akif9748/system-info.git"
+  },
+  "keywords": [
+    "system-info"
+  ],
+  "author": "Akif9748",
+  "license": "GPL-3.0-or-later",
+  "bugs": {
+    "url": "https://github.com/Akif9748/system-info/issues"
+  },
+  "homepage": "https://github.com/Akif9748/system-info#readme",
+  "dependencies": {
+    "desktop-screenshot": "^0.1.1",
+    "node-os-utils": "^1.3.5",
+    "pngjs": "^6.0.0"
+  }
+}
