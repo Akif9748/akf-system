@@ -74,6 +74,7 @@ gpus.shift();
     
     // Normalise the result here to get the GPU name
 for (const gpu of gpus){
+    if (!gpu) return
     console.log(back,main, "GPU:", second, gpu);
 }
 });
