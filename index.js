@@ -68,7 +68,8 @@ require("child_process").exec("wmic path win32_VideoController get name", (error
         console.error(stderr);
         var gpu = "Not Found";
     } else {
-        var gpus = stdout.split("\n").shift();
+        var gpus = stdout.split("\n")
+gpus.shift();
     }
     
     // Normalise the result here to get the GPU name
