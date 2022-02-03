@@ -7,7 +7,7 @@ module.exports = (main,second,back) => {
         fs.createReadStream("./a.png").pipe(new PNG())
         .on("parsed", function() {
             console.log(back,main,"Resolution:",second,this.width+"x"+this.height)
-            fs.unlinkSync("./a.png");
+          //fs.unlinkSync("./a.png");
         })
         .on("error", console.error);
             
