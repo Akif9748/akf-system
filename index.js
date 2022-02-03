@@ -60,7 +60,7 @@ console.log(main, "Uptime:", second, require("./uptime.js")(os.uptime()));
 console.log(main, "CPU:", second, osu.cpu.model());
 console.log(main, "RAM:", second, ram - (os.freemem() / 2 ** 20).toFixed(0) + "MB", "/", ram + "MB");
 //Screen Information:
-require("child_process").exec("wmic path win32_VideoController get name", (error, stdout, stderr) => {
+/*require("child_process").exec("wmic path win32_VideoController get name", (error, stdout, stderr) => {
     if (error) {
         console.error(error.message);
         var gpu = "Not Found";
@@ -69,7 +69,7 @@ require("child_process").exec("wmic path win32_VideoController get name", (error
         var gpu = "Not Found";
     } else {
         var gpus = stdout.split("\n")
-gpus.shift();
+        gpus.shift();
     }
     
     // Normalise the result here to get the GPU name
@@ -77,6 +77,6 @@ for (const gpu of gpus){
     if (!gpu || gpu.length <3) return
     console.log(back,main, "GPU:", second, gpu);
 }
-});
+});*/
 require("./resolution")(main, second,back);
 console.log("\x1b[0m")//RESET
