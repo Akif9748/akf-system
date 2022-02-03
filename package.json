@@ -4,7 +4,7 @@
   "description": "Write your system info to console.",
   "main": "index.js",
   "scripts": {
-    "test": "node index.js"
+    "test": "node index.js","start":"node index.js"
   },
   "repository": {
     "type": "git",
