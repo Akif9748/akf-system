@@ -1,82 +1,87 @@
-if (!process.platform=="win32") return console.log("Only for Windows for now :)")
 
-const fs = require("fs")
-const os = require("os")
-const osu = require('node-os-utils');
+//imports:
+//For reading ASCII:
+const fs = require("fs"),
+    //For System information:
+    os = require("os"),
+    //For write to console:
+    write = require("./lib/print"),
+    //For colors of terminal:
+    { main, second, back, blue } = require("./lib/colors");
 
-const main = "\x1b[31m",
-    second = "\x1b[37m",
-    back="\x1b[40m",
-    build = os.release(),
-    ram = (os.totalmem() / 2 ** 20).toFixed(0);
+//System infos:
+const build = os.release(),//Build name
+    ram = (os.totalmem() / 2 ** 20).toFixed(0), //Total RAM
+    usedmem = ram - (os.freemem() / 2 ** 20).toFixed(0),//Used RAM
+    type = os.platform(),//win32 or linux or darwin
+    cpu = os.cpus()[0].model;//CPU 
 
-//Win ASCII and Version:
-var version,ascii;
-switch (build.substring(0, 3)) {
-    case "10.":
-        ascii= "w10"
-        version = "Windows 10 "
-        break;
-    case "6.3":
-        ascii= "w10"
-        version = "Windows 8.1 "
-        break;
-    case "6.2":
-        ascii= "w10"
-        version = "Windows 8 "
-        break;
-    case "6.1":
-        ascii= "w7"
-        version = "Windows 7 "
-        break;
-    case "5.2":
-        ascii= "w7"
-        version = "Windows XP Professional "
-        break;
+//ASCII and OS NAME:
+var ascii = "not", version = os.version();
 
-    case "5.1":
-        ascii= "w7"
-        version = "Windows XP "
+if (type === "win32") {
+    switch (build.substring(0, 3)) {
+        case "10.":
+            ascii = "w10";
+            break;
+        case "6.3":
+            ascii = "w10";
+            break;
+        case "6.2":
+            ascii = "w10";
+            break;
+        case "6.1":
+            ascii = "w7";
+            break;
+        case "5.2":
+            ascii = "w7";
+            break;
+        case "5.1":
+            ascii = "w7";
+            break;
+        default:
+            ascii = "not";
+            break;
+    };
+}
+
+//Add arch to version:
+version += " " + os.arch();
+
+//Writing Main title:
+write("SYSTEM", "INFORMATION:");
+
+//Write ASCII Blue:
+console.log(blue, fs.readFileSync(`./ascii/${ascii}.txt`, "utf-8"));
+
+//General Information:
+write("General", "Information:");
+
+console.log()//Blank
+
+write("Username:", os.userInfo().username);
+write("OS:", version);
+write("Build:", build);
+write("Host:", os.hostname());
+write("Uptime:", require("./lib/uptime.js")(os.uptime()));
+write("CPU:", cpu);
+write("RAM:", usedmem + "MB / " + ram + "MB");
+
+console.log()//Blank
+
+//Screen Information:
+write("Screen", "Information:");
+require("./lib/resolution.js")(main, second, back);
+
+switch (type) {
+    case "win32":
+        require("./lib/gpu")(main, second, back);
         break;
 
     default:
-        version = "Not Found. "
-        ascii= "not"
+        write("GPU:", "Not supported in your platform.");
         break;
-};
-version += os.arch()
-
-
-
-console.log(back,main,"System Information:")
-//Write ASCII Blue:
-console.log("\x1b[34m",fs.readFileSync(`./ascii/${ascii}.txt`,{encoding:"utf-8"}))
-//Other Information:
-console.log(main, "Username:", second, os.userInfo().username);
-console.log(main, "OS:", second, version);
-console.log(main, "Build:", second, build);
-console.log(main, "Host:", second, osu.os.hostname());
-console.log(main, "Uptime:", second, require("./uptime.js")(os.uptime()));
-console.log(main, "CPU:", second, osu.cpu.model());
-console.log(main, "RAM:", second, ram - (os.freemem() / 2 ** 20).toFixed(0) + "MB", "/", ram + "MB");
-//Screen Information:
-/*require("child_process").exec("wmic path win32_VideoController get name", (error, stdout, stderr) => {
-    if (error) {
-        console.error(error.message);
-        var gpu = "Not Found";
-    }else if (stderr) {
-        console.error(stderr);
-        var gpu = "Not Found";
-    } else {
-        var gpus = stdout.split("\n")
-        gpus.shift();
-    }
-    
-    // Normalise the result here to get the GPU name
-for (const gpu of gpus){
-    if (!gpu || gpu.length <3) return
-    console.log(back,main, "GPU:", second, gpu);
 }
-});*/
-require("./resolution")(main, second,back);
-console.log("\x1b[0m")//RESET
+
+//RESET:
+console.log("\x1b[0m");
