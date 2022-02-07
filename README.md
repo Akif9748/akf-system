@@ -13,4 +13,5 @@ It can show:
 - GPU name (Only for Windows)
 - Screen Resolution
 
-![image](https://user-images.githubusercontent.com/70021050/147862002-c4339723-88b0-4fbf-b541-06456a2c6d29.png)
+![image](https://user-images.githubusercontent.com/70021050/152860251-34f76403-82f7-4885-b859-0707048bfd6b.png)
+
