@@ -1,4 +1,3 @@
-
 //imports:
 //For reading ASCII:
 const fs = require("fs"),
@@ -7,7 +6,7 @@ const fs = require("fs"),
     //For write to console:
     write = require("./lib/print"),
     //For colors of terminal:
-    { main, second, back, blue } = require("./lib/colors");
+    { blue } = require("./lib/colors");
 
 //System infos:
 const build = os.release(),//Build name
@@ -43,7 +42,8 @@ if (type === "win32") {
             ascii = "not";
             break;
     };
-}
+} else if (type === "darwin")
+    ascii = "mac"
 
 //Add arch to version:
 version += " " + os.arch();
@@ -71,11 +71,16 @@ console.log()//Blank
 
 //Screen Information:
 write("Screen", "Information:");
-require("./lib/resolution.js")(main, second, back);
 
 switch (type) {
     case "win32":
-        require("./lib/gpu")(main, second, back);
+        const gpus = require("./lib/gpu")()
+        let count = 0;
+        for (const gpu of gpus) {//Pass blank:
+            write(`GPU${count}:`, gpu);
+            count++;
+        }
+
         break;
 
     default:
@@ -83,5 +88,10 @@ switch (type) {
         break;
 }
 
-//RESET:
-console.log("\x1b[0m");
+(async () => {
+    const res = await require("./lib/resolution.js")
+    write("Resolution:", res.width + "x" + res.height);
+
+    //RESET:
+    console.log("\x1b[0m");
+})()
