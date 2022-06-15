@@ -1,6 +1,6 @@
 {
   "name": "system-info",
-  "version": "1.0.3",
+  "version": "1.1.0",
   "description": "Write your system info to console.",
   "main": "index.js",
   "scripts": {
