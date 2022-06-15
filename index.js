@@ -3,6 +3,7 @@
 const fs = require("fs"),
     //For System information:
     os = require("os"),
+    { execSync } = require("child_process"),
     //For write to console:
     write = require("./lib/print"),
     //For colors of terminal:
@@ -16,7 +17,7 @@ const build = os.release(),//Build name
     cpu = os.cpus()[0].model;//CPU 
 
 //ASCII and OS NAME:
-var ascii = "not", version = os.version();
+let ascii = "not", version = os.version();
 
 if (type === "win32") {
     switch (build.substring(0, 3)) {
@@ -72,21 +73,18 @@ console.log()//Blank
 //Screen Information:
 write("Screen", "Information:");
 
-switch (type) {
-    case "win32":
-        const gpus = require("./lib/gpu")()
-        let count = 0;
-        for (const gpu of gpus) {//Pass blank:
-            write(`GPU${count}:`, gpu);
-            count++;
-        }
+if (type === "win32") {
+    const gpus = require("./lib/gpuwin32")()
+    let count = 0;
+    for (const gpu of gpus) {//Pass blank:
+        write(`GPU${count}:`, gpu);
+        count++;
+    }
+} else if (type === "darwin")
+    write(`GPU:`, execSync("system_profiler SPDisplaysDataType | grep Chipset").toString());
+else
+    write("GPU:", "Not supported in your platform.");
 
-        break;
-
-    default:
-        write("GPU:", "Not supported in your platform.");
-        break;
-}
 
 (async () => {
     const res = await require("./lib/resolution.js")
