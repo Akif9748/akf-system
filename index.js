@@ -1,95 +1,82 @@
-//imports:
 //For reading ASCII:
 const fs = require("fs"),
-    //For System information:
-    os = require("os"),
+    os = require("os"),    //For System information:
     { execSync } = require("child_process"),
     //For write to console:
-    write = require("./lib/print"),
-    //For colors of terminal:
-    { blue } = require("./lib/colors");
+    write = (key, value) => console.log("\x1b[40m\x1b[31m", key, "\x1b[37m", value);
+
 
 //System infos:
 const build = os.release(),//Build name
     ram = (os.totalmem() / 2 ** 20).toFixed(0), //Total RAM
     usedmem = ram - (os.freemem() / 2 ** 20).toFixed(0),//Used RAM
     type = os.platform(),//win32 or linux or darwin
-    cpu = os.cpus()[0].model;//CPU 
+    cpu = os.cpus()[0].model,//CPU 
+    version = `${os.version()} ${os.arch()}`,//OS NAME
+    ascii = type === "win32" ? {
+        "10.": "w10",
+        "6.3": "w10",
+        "6.2": "w10",
+        "6.1": "w7",
+        "5.2": "w7",
+        "5.1": "w7"
+    }[build.substring(0, 3)] || "not" : type === "darwin" ? "mac" : "not";
 
-//ASCII and OS NAME:
-let ascii = "not", version = os.version();
-
-if (type === "win32") {
-    switch (build.substring(0, 3)) {
-        case "10.":
-            ascii = "w10";
-            break;
-        case "6.3":
-            ascii = "w10";
-            break;
-        case "6.2":
-            ascii = "w10";
-            break;
-        case "6.1":
-            ascii = "w7";
-            break;
-        case "5.2":
-            ascii = "w7";
-            break;
-        case "5.1":
-            ascii = "w7";
-            break;
-        default:
-            ascii = "not";
-            break;
-    };
-} else if (type === "darwin")
-    ascii = "mac"
-
-//Add arch to version:
-version += " " + os.arch();
+// Uptime
+let seconds = os.uptime();
+const days = Math.floor(seconds / 86400);
+seconds -= days * 86400;
+const hours = Math.floor(seconds / 3600);
+seconds -= hours * 3600;
+const minutes = Math.floor(seconds / 60);
+seconds -= minutes * 60;
 
 //Writing Main title:
 write("SYSTEM", "INFORMATION:");
 
 //Write ASCII Blue:
-console.log(blue, fs.readFileSync(`./ascii/${ascii}.txt`, "utf-8"));
+console.log(`\x1b[34m${fs.readFileSync(`./ascii/${ascii}.txt`, "utf-8")}`);
 
-//General Information:
-write("General", "Information:");
-
-console.log()//Blank
+// General Information:
+write("General", "Information:\n");
 
 write("Username:", os.userInfo().username);
 write("OS:", version);
 write("Build:", build);
 write("Host:", os.hostname());
-write("Uptime:", require("./lib/uptime.js")(os.uptime()));
+write("Uptime:", `${days} Days, ${hours} Hours, ${minutes} Mins, ${seconds} Secs`);
 write("CPU:", cpu);
-write("RAM:", usedmem + "MB / " + ram + "MB");
+write("RAM:", `${usedmem}MB / ${ram}MB\n`);
 
-console.log()//Blank
-
-//Screen Information:
+// Screen Information:
 write("Screen", "Information:");
 
 if (type === "win32") {
-    const gpus = require("./lib/gpuwin32")()
-    let count = 0;
-    for (const gpu of gpus) {//Pass blank:
-        write(`GPU${count}:`, gpu);
-        count++;
-    }
+    const stdout = execSync("wmic path win32_VideoController get name").toString()
+    const gpus = stdout.trim().split(/\r?\n/g).slice(1);
+
+    for (let i = 0; i < gpus.length; i++)
+        write(`GPU${i}:`, gpus[i]);
+
 } else if (type === "darwin")
     write(`GPU:`, execSync("system_profiler SPDisplaysDataType | grep Chipset").toString());
 else
     write("GPU:", "Not supported in your platform.");
 
 
-(async () => {
-    const res = await require("./lib/resolution.js")
-    write("Resolution:", res.width + "x" + res.height);
+// Resolution information:
+const resolutions = {
+    darwin: "screencapture -x ./lib/ss.png",
+    linux: "./lib/scrot ./lib/ss.png",
+    win32: `.\\lib\\nircmd savescreenshot ./lib/ss.png`
+}
 
-    //RESET:
-    console.log("\x1b[0m");
-})()
+
+if (Object.keys(resolutions).includes(type))
+    execSync(resolutions[type]);
+
+const { width, height } = require('image-size')('./lib/ss.png');
+write("Resolution:", `${width}x${height}`);
+
+//RESET:
+console.log("\x1b[0m");

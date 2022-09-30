@@ -1,5 +1,5 @@
 {
-  "name": "system-info",
+  "name": "akf-system",
   "version": "1.1.0",
   "description": "Write your system info to console.",
   "main": "index.js",
@@ -8,19 +8,21 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Akif9748/system-info.git"
+    "url": "git+https://github.com/Akif9748/akf-system.git"
   },
   "keywords": [
-    "system-info"
+    "akf-system"
   ],
   "author": "Akif9748",
   "license": "GPL-3.0-or-later",
   "bugs": {
-    "url": "https://github.com/Akif9748/system-info/issues"
+    "url": "https://github.com/Akif9748/akf-system/issues"
   },
-  "homepage": "https://github.com/Akif9748/system-info#readme",
+  "homepage": "https://github.com/Akif9748/akf-system#readme",
+  "bin": {
+    "akf-system": "index.js"
+  },
   "dependencies": {
-    "desktop-screenshot": "^0.1.1",
-    "image-size": "^1.0.1"
+    "image-size": "^1.0.2"
   }
 }
