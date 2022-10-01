@@ -12,15 +12,27 @@ const build = os.release(),//Build name
     usedmem = ram - (os.freemem() / 2 ** 20).toFixed(0),//Used RAM
     type = os.platform(),//win32 or linux or darwin
     cpu = os.cpus()[0].model,//CPU 
-    version = `${os.version()} ${os.arch()}`,//OS NAME
-    ascii = type === "win32" ? {
-        "10.": "w10",
-        "6.3": "w10",
-        "6.2": "w10",
-        "6.1": "w7",
-        "5.2": "w7",
-        "5.1": "w7"
-    }[build.substring(0, 3)] || "not" : type === "darwin" ? "mac" : "not";
+    version = `${os.version()} ${os.arch()}`;//OS NAME
+
+let ascii = "not";
+
+if (type === "win32") {
+    if (Number(build.substring(5, 7)) < 20)
+        ascii = {
+            "10.": "w10",
+            "6.3": "w10",
+            "6.2": "w10",
+            "6.1": "w7",
+            "5.2": "w7",
+            "5.1": "w7"
+        }[build.substring(0, 3)]
+    else
+        ascii = "w11"
+
+} else if (type === "darwin")
+    ascii = "mac"
+
+
 
 // Uptime
 let seconds = os.uptime();
