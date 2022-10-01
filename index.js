@@ -34,8 +34,11 @@ seconds -= minutes * 60;
 //Writing Main title:
 write("SYSTEM", "INFORMATION:");
 
-//Write ASCII Blue:
-console.log(`\x1b[34m${fs.readFileSync(`./ascii/${ascii}.txt`, "utf-8")}`);
+//Write ASCII:
+console.log(fs.readFileSync(`./ascii/${ascii}.txt`, "utf-8")
+    .replaceAll("RED", "\x1b[31m").replaceAll("GREEN", "\x1b[32m").replaceAll("YELLOW", "\x1b[33m").replaceAll("RESET", "\x1b[0m")
+    .replaceAll("BLUE", ["6.2", "6.3"].includes(build.slice(0, 3)) ? "\x1b[35m" : "\x1b[34m")// 8 & 8.1
+);
 
 // General Information:
 write("General", "Information:\n");

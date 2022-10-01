@@ -1,5 +1,6 @@
 # akf-system
 You can write your system info to your console like Neofetch.
+Run `npm i` to install the dependencies.
 It can show:
 
 - ASCII art for your OS
