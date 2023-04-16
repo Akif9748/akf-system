@@ -1,7 +1,7 @@
 {
   "name": "akf-system",
   "version": "1.1.5",
-  "description": "Write your system info to console.",
+  "description": "A Node.js based system-information writer",
   "main": "index.js",
   "scripts": {
     "test": "node index.js"
@@ -11,7 +11,10 @@
     "url": "git+https://github.com/Akif9748/akf-system.git"
   },
   "keywords": [
-    "akf-system"
+    "akf-system",
+    "system-information",
+    "system-info",
+    "neofetch"
   ],
   "author": "Akif9748",
   "license": "GPL-3.0-or-later",
@@ -20,6 +23,6 @@
   },
   "homepage": "https://github.com/Akif9748/akf-system#readme",
   "bin": {
-    "akf-system": "index.js"
+    "asys": "index.js"
   }
 }

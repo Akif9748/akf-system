@@ -33,10 +33,13 @@ const infs = {
     'Build:': build,
     'Uptime:': `${days} Days, ${hours} Hours, ${minutes} Mins, ${seconds} Secs`,
     'CPU:': os.cpus()[0].model,
-    'RAM:': `${usedmem}MB / ${totalmem}MB (${parseInt(usedmem / totalmem * 100)}%)\n`,
-    'Screen': 'Information:'
+    'RAM:': `${usedmem}MB / ${totalmem}MB (${parseInt(usedmem / totalmem * 100)}%)`
 }
 
+if (PLATFORM === "win32")
+    infs["Motherboard:"] = execSync("wmic path win32_BaseBoard get Manufacturer,Product").toString().split("\n")[1].trim() + "\n";
+
+infs["Screen"] = "Information:";
 if (PLATFORM === "win32")
     execSync("wmic path win32_VideoController get name").toString().trim()
         .split(/\r?\n/g).slice(1).forEach((gpu, i) => infs[`GPU${i}:`] = gpu);
@@ -48,6 +51,7 @@ else
 if (PLATFORM in RES_CMD) {
     execSync(`${RES_CMD[PLATFORM]} ${IMAGE_PATH}`);
     const filec = fs.readFileSync(IMAGE_PATH);
+    fs.unlinkSync(IMAGE_PATH);
     infs["Resolution:"] = `${filec.readUInt32BE(16)}x${filec.readUInt32BE(20)}`;
 }
 

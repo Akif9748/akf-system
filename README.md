@@ -1,27 +1,21 @@
 # akf-system
-You can write your system info to your console like Neofetch.
-Run `npm i` to install the dependencies.
-It can show:
+A Node.js based system-information writer.
+It can show with order:
 
 - ASCII art for your OS
 - Your username
+- Host name
 - OS name
 - Build name
-- Host name
 - Uptime of system
 - CPU name
 - RAM usage
+- Motherboard
 - GPU name 
 - Screen Resolution
 
-You can install it:
-```
-npm i . -g
-```
-Then:
-```
-akf-system
-```
+You can install it with `npm i -g akf-system` and use with `asys`
+
+Or you can use it without install via `npx akf-system`
 
 ![image](https://user-images.githubusercontent.com/70021050/152860251-34f76403-82f7-4885-b859-0707048bfd6b.png)
-
