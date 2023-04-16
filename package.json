@@ -1,10 +1,11 @@
 {
   "name": "akf-system",
   "version": "1.2.0",
-  "description": "A Node.js based system-information writer",
+  "description": "A Node.js based sync system-information (GPU, RAM, etc.) fetcher. Zero dependencies.",
   "main": "index.js",
+  "types": "index.d.ts",
   "scripts": {
-    "test": "node index.js"
+    "test": "node cli.js"
   },
   "repository": {
     "type": "git",
@@ -14,7 +15,13 @@
     "akf-system",
     "system-information",
     "system-info",
-    "neofetch"
+    "neofetch",
+    "system",
+    "gpu",
+    "uptime",
+    "cpu",
+    "motherboard",
+    "ram"
   ],
   "author": "Akif9748",
   "license": "GPL-3.0-or-later",
@@ -23,6 +30,6 @@
   },
   "homepage": "https://github.com/Akif9748/akf-system#readme",
   "bin": {
-    "asys": "index.js"
+    "asys": "cli.js"
   }
 }
