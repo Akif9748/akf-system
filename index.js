@@ -1,40 +1,35 @@
-//For reading ASCII:
-const fs = require("fs"),
-    os = require("os"),    //For System information:
+const
+    fs = require("fs"),
+    os = require("os"),
     { execSync } = require("child_process"),
-    //For write to console:
+    PLATFORM = process.platform,
+    IMAGE_PATH = "./lib/ss.png",
+    RES_CMD = {
+        darwin: "screencapture -x",
+        linux: "./lib/scrot",
+        win32: ".\\lib\\nircmd savescreenshot"
+    }, // taken from image-size
+    imagesize = buffer => [buffer.readUInt32BE(16), buffer.readUInt32BE(20)],
     write = (key, value) => console.log("\x1b[40m\x1b[31m", key, "\x1b[37m", value);
 
+const
+    build = os.release(),
+    totalmem = parseInt(os.totalmem() / 2 ** 20),
+    usedmem = parseInt(totalmem - os.freemem() / 2 ** 20),
+    cpu = os.cpus()[0].model,
+    version = `${os.version()} ${os.arch()}`,
+    ascii = PLATFORM === "win32" ?
+        Number(build.substring(5, 7)) < 20 ?
+            {
+                "10.": "w10",
+                "6.3": "w10",
+                "6.2": "w10",
+                "6.1": "w7",
+                "5.2": "w7",
+                "5.1": "w7"
+            }[build.substring(0, 3)] : "w11"
+        : PLATFORM === "darwin" ? "mac" : "not";
 
-//System infos:
-const build = os.release(),//Build name
-    ram = (os.totalmem() / 2 ** 20).toFixed(0), //Total RAM
-    usedmem = ram - (os.freemem() / 2 ** 20).toFixed(0),//Used RAM
-    type = os.platform(),//win32 or linux or darwin
-    cpu = os.cpus()[0].model,//CPU 
-    version = `${os.version()} ${os.arch()}`;//OS NAME
-
-let ascii = "not";
-
-if (type === "win32") {
-    if (Number(build.substring(5, 7)) < 20)
-        ascii = {
-            "10.": "w10",
-            "6.3": "w10",
-            "6.2": "w10",
-            "6.1": "w7",
-            "5.2": "w7",
-            "5.1": "w7"
-        }[build.substring(0, 3)]
-    else
-        ascii = "w11"
-
-} else if (type === "darwin")
-    ascii = "mac"
-
-
-
-// Uptime
 let seconds = os.uptime();
 const days = Math.floor(seconds / 86400);
 seconds -= days * 86400;
@@ -43,55 +38,41 @@ seconds -= hours * 3600;
 const minutes = Math.floor(seconds / 60);
 seconds -= minutes * 60;
 
-//Writing Main title:
+
 write("SYSTEM", "INFORMATION:");
 
-//Write ASCII:
-console.log(fs.readFileSync(`./ascii/${ascii}.txt`, "utf-8")
+console.log(fs.readFileSync(`./ascii/${ascii}.txt`, "utf-8") // write ascii
     .replaceAll("RED", "\x1b[31m").replaceAll("GREEN", "\x1b[32m").replaceAll("YELLOW", "\x1b[33m").replaceAll("RESET", "\x1b[0m")
     .replaceAll("BLUE", ["6.2", "6.3"].includes(build.slice(0, 3)) ? "\x1b[35m" : "\x1b[34m")// 8 & 8.1
 );
 
-// General Information:
+
 write("General", "Information:\n");
 
 write("Username:", os.userInfo().username);
+write("Host:", os.hostname());
 write("OS:", version);
 write("Build:", build);
-write("Host:", os.hostname());
 write("Uptime:", `${days} Days, ${hours} Hours, ${minutes} Mins, ${seconds} Secs`);
 write("CPU:", cpu);
-write("RAM:", `${usedmem}MB / ${ram}MB\n`);
+write("RAM:", `${usedmem}MB / ${totalmem}MB (${parseInt(usedmem / totalmem * 100)}%)\n`);
 
-// Screen Information:
 write("Screen", "Information:");
 
-if (type === "win32") {
-    const stdout = execSync("wmic path win32_VideoController get name").toString()
-    const gpus = stdout.trim().split(/\r?\n/g).slice(1);
-
-    for (let i = 0; i < gpus.length; i++)
-        write(`GPU${i}:`, gpus[i]);
-
-} else if (type === "darwin")
+if (PLATFORM === "win32")
+    execSync("wmic path win32_VideoController get name").toString().trim()
+        .split(/\r?\n/g).slice(1).forEach((gpu, i) => write(`GPU${i}:`, gpu));
+else if (PLATFORM === "darwin")
     write(`GPU:`, execSync("system_profiler SPDisplaysDataType | grep Chipset").toString());
 else
-    write("GPU:", "Not supported in your platform.");
+    write("GPU:", "N/A");
 
-
-// Resolution information:
-const resolutions = {
-    darwin: "screencapture -x ./lib/ss.png",
-    linux: "./lib/scrot ./lib/ss.png",
-    win32: `.\\lib\\nircmd savescreenshot ./lib/ss.png`
+let res = "N/A";
+if (PLATFORM in RES_CMD) {
+    execSync(`${RES_CMD[PLATFORM]} ${IMAGE_PATH}`);
+    res = imagesize(fs.readFileSync(IMAGE_PATH)).join("x");
 }
 
+write("Resolution:", res);
 
-if (Object.keys(resolutions).includes(type))
-    execSync(resolutions[type]);
-
-const { width, height } = require('image-size')('./lib/ss.png');
-write("Resolution:", `${width}x${height}`);
-
-//RESET:
-console.log("\x1b[0m");
+console.log("\x1b[0m"); // RESET CONSOLE

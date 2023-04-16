@@ -21,8 +21,5 @@
   "homepage": "https://github.com/Akif9748/akf-system#readme",
   "bin": {
     "akf-system": "index.js"
-  },
-  "dependencies": {
-    "image-size": "^1.0.2"
   }
 }
